@@ -6,18 +6,27 @@ import pygame
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-BACKGROUND_COLOR = (20, 20, 30)
+BACKGROUND_COLOR = [random.randint(0, 255) for x in range(3)]
 FPS = 60
-SQUARE_COUNT = 10
+SQUARE_COUNT = 20
+
+SQUARE_MIN_SIZE = 10
+SQUARE_MAX_SIZE = 60
+GLOBAL_MAX_SPEED = 8
 
 
 class Square:
 	def __init__(self) -> None:
-		self.size = random.randint(20, 50)
+		self.size = random.randint(SQUARE_MIN_SIZE, SQUARE_MAX_SIZE)
 		self.x = random.randint(0, WINDOW_WIDTH - self.size)
 		self.y = random.randint(0, WINDOW_HEIGHT - self.size)
-		self.vx = random.choice([-1, 1]) * random.randint(2, 6)
-		self.vy = random.choice([-1, 1]) * random.randint(2, 6)
+		
+		# Bigger squares are slower: max speed scales inversely with size
+		size_ratio = (self.size - SQUARE_MIN_SIZE) / (SQUARE_MAX_SIZE - SQUARE_MIN_SIZE)
+		self.max_speed = max(1, int(GLOBAL_MAX_SPEED * (1 - size_ratio * 0.75)))
+		
+		self.vx = random.choice([-1, 1]) * random.randint(1, self.max_speed)
+		self.vy = random.choice([-1, 1]) * random.randint(1, self.max_speed)
 		self.color = (
 			random.randint(80, 255),
 			random.randint(80, 255),
@@ -26,8 +35,8 @@ class Square:
 
 	def update(self) -> None:
 		if random.random() < 0.02:
-			self.vx = random.choice([-1, 1]) * random.randint(2, 6)
-			self.vy = random.choice([-1, 1]) * random.randint(2, 6)
+			self.vx = random.choice([-1, 1]) * random.randint(1, self.max_speed)
+			self.vy = random.choice([-1, 1]) * random.randint(1, self.max_speed)
 
 		self.x += self.vx
 		self.y += self.vy
