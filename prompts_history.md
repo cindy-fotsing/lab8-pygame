@@ -20,3 +20,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 07-04-2026 11:28
 - **Prompt**: Here is what i am thinking to make, the smaller squares flee awy from the bigger ones. Do not give away the full solution/algorithm, just help me learn how to do it progressively.
 
+### 07-04-2026 11:36
+- **Prompt**: help me with TODOs
+
