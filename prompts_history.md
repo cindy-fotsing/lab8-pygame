@@ -17,3 +17,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 30-03-2026 14:02
 - **Prompt**: create a requirements.txt file that will track  the dependencies for this project. Then create a README.md file for this project.
 
+### 07-04-2026 11:28
+- **Prompt**: Here is what i am thinking to make, the smaller squares flee awy from the bigger ones. Do not give away the full solution/algorithm, just help me learn how to do it progressively.
+
