@@ -26,3 +26,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 07-04-2026 11:53
 - **Prompt**: can you check if i am on the right track before i continue?
 
+### 08-04-2026 21:45
+- **Prompt**: write the TODO in the main.py file and i will complete them
+
