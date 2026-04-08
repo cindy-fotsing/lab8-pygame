@@ -33,7 +33,16 @@ class Square:
 			random.randint(80, 255),
 		)
 
-	def update(self) -> None:
+	def center(self) -> tuple[float, float]:
+		# TODO 1: Use this helper for center-to-center calculations.
+		return (self.x + self.size / 2, self.y + self.size / 2)
+
+	def update(self, squares: list["Square"]) -> None:
+		# TODO 2: Build bigger_neighbors from squares (exclude self).
+		# TODO 3: Choose one threat target among bigger_neighbors.
+		# TODO 4: Compute normalized flee direction away from threat target.
+		# TODO 5: Add flee steering to current velocity (vx, vy).
+		# TODO 6: Clamp resulting speed to self.max_speed.
 		if random.random() < 0.02:
 			self.vx = random.choice([-1, 1]) * random.randint(1, self.max_speed)
 			self.vy = random.choice([-1, 1]) * random.randint(1, self.max_speed)
@@ -53,6 +62,11 @@ class Square:
 		pygame.draw.rect(surface, self.color, (self.x, self.y, self.size, self.size))
 
 
+def distance(a: tuple[float, float], b: tuple[float, float]) -> float:
+	# TODO 7: Reuse this helper to find the nearest bigger neighbor.
+	return ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
+
+
 def main() -> None:
 	pygame.init()
 	screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -70,7 +84,8 @@ def main() -> None:
 		screen.fill(BACKGROUND_COLOR)
 
 		for square in squares:
-			square.update()
+			# TODO 8: Keep passing all squares to update so each square can inspect neighbors.
+			square.update(squares)
 			square.draw(screen)
 
 		pygame.display.flip()
@@ -78,7 +93,6 @@ def main() -> None:
 
 	pygame.quit()
 	sys.exit()
-
 
 if __name__ == "__main__":
 	main()
