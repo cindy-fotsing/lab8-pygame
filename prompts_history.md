@@ -35,3 +35,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 13-04-2026 14:12
 - **Prompt**: Activate the journal logger
 
+### 13-04-2026 14:12
+- **Prompt**: Activate journaling for this session by updating JOURNAL.md in the repository root according to the required template in .github/agents/journal-logger.agent.md. Treat this prompt ('Activate the journal logger') as the interaction to log. If JOURNAL.md is missing, create it first. Append the new entry at the end, with current date/time context available to you. Return a concise status: whether logging succeeded, file updated, and a 1-2 line summary of the appended entry.
+
