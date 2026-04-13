@@ -41,3 +41,6 @@ Automatically captured prompt log. Entries are appended in chronological order (
 ### 13-04-2026 14:15
 - **Prompt**: Generate the code explorer site for this project
 
+### 13-04-2026 14:15
+- **Prompt**: Create a code explorer learning dashboard site for this repository. Analyze all relevant source files (especially main.py and project docs), then generate a single self-contained HTML dashboard in the workspace root named code_explorer.html. Include architecture overview, module/function walkthrough, control/data flow notes, key patterns, risks, and actionable learning notes suitable for a first-year student. Include Mermaid diagrams embedded in the HTML (or rendered fallback if needed). Ensure links/sections are clear and the page is usable on desktop and mobile. Keep content accurate to actual code. After creating files, return: 1) files created/updated, 2) concise summary of sections included, 3) any assumptions/limitations.
+
