@@ -25,7 +25,6 @@ class Square:
 
 		self.life = random.randint(FPS * 2, FPS * 6)
 
-		# Bigger squares are slower
 		size_ratio = (self.size - SQUARE_MIN_SIZE) / (SQUARE_MAX_SIZE - SQUARE_MIN_SIZE)
 		self.max_speed = max(1, int(GLOBAL_MAX_SPEED * (1 - size_ratio * 0.75)))
 
@@ -111,18 +110,14 @@ def main() -> None:
 
 		screen.fill(BACKGROUND_COLOR)
 
-		# Update squares
 		for square in squares:
 			square.update(squares)
 
-		# Remove dead squares
 		squares = [s for s in squares if s.life > 0]
 
-		# Spawn new ones
 		while len(squares) < SQUARE_COUNT:
 			squares.append(Square())
 
-		# Draw squares
 		for square in squares:
 			square.draw(screen)
 
