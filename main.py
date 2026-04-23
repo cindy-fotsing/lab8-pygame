@@ -40,7 +40,7 @@ class Square:
 		return (self.x + self.size / 2, self.y + self.size / 2)
 
 	def update(self, squares: list["Square"]) -> None:
-		bigger_neighbors = [s for s in squares if s is not self and s.size > self.size]
+		bigger_neighbors = [s for s in squares if s is not self and s.size < self.size]
 
 		cx, cy = self.center()
 		nearby_threats = [
@@ -52,17 +52,17 @@ class Square:
 			threat = min(nearby_threats, key=lambda s: distance((cx, cy), s.center()))
 
 			tx, ty = threat.center()
-			dx = cx - tx
-			dy = cy - ty
+			dx = tx - cx
+			dy = ty - cy
 			dist = distance((cx, cy), (tx, ty))
 
 			if dist > 0:
 				nx = dx / dist
 				ny = dy / dist
 
-				flee_strength = 4.0 * (1.0 - dist / DANGER_RADIUS)
-				self.vx += nx * flee_strength
-				self.vy += ny * flee_strength
+				chase_strength = 3.0 * (1.0 - dist / DANGER_RADIUS)
+				self.vx += nx * chase_strength
+				self.vy += ny * chase_strength
 
 				speed = math.hypot(self.vx, self.vy)
 				if speed > self.max_speed:
