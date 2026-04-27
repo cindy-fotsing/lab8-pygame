@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab 8 Architecture</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111c33;
+      --panel-2: #172444;
+      --text: #e5eefc;
+      --muted: #b7c7e6;
+      --accent: #67e8f9;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(103, 232, 249, 0.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(148, 163, 184, 0.12), transparent 24%),
+        var(--bg);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    header {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(23, 36, 68, 0.92), rgba(17, 28, 51, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      padding: 20px;
+      background: rgba(17, 28, 51, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .card h2 {
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+      color: var(--accent);
+    }
+
+    .note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .mermaid {
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .list li {
+      padding-left: 4px;
+    }
+
+    @media (min-width: 900px) {
+      .two-col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+    });
+  </script>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Lab 8 Architecture</h1>
+      <p>A single-file Pygame app that animates a fixed population of squares with random motion, edge bouncing, threat-seeking behavior, and automatic respawn.</p>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Module Dependency Graph</h2>
+        <div class="mermaid">
+graph TD
+    main["main.py"]
+    random["random"]
+    math["math"]
+    sys["sys"]
+    pygame["pygame"]
+          squareClass["Square"]
+          distanceFn["distance()"]
+
+    main --> random
+    main --> math
+    main --> sys
+    main --> pygame
+          main --> squareClass
+          main --> distanceFn
+          squareClass --> random
+          squareClass --> math
+          squareClass --> pygame
+          distanceFn --> math
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Runtime Flow</h2>
+        <div class="mermaid">
+flowchart TD
+    A["Start program"] --> B["Initialize Pygame"]
+    B --> C["Create 800x600 window and clock"]
+    C --> D["Create 20 squares"]
+    D --> E["Enter frame loop"]
+    E --> F["Poll events"]
+    F --> G{"Quit event?"}
+    G -- "Yes" --> H["Stop running"]
+    G -- "No" --> I["Fill background"]
+    I --> J["Update each square"]
+    J --> K["Remove expired squares"]
+    K --> L{"Need more squares?"}
+    L -- "Yes" --> M["Spawn new Square instances"]
+    L -- "No" --> N["Draw all squares"]
+    M --> N
+    N --> O["Flip display and tick FPS"]
+    O --> E
+    H --> P["Quit Pygame and exit"]
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Function Call Graph</h2>
+        <div class="mermaid">
+graph TD
+    main_fn["main()"] --> pygame_init["pygame.init()"]
+    main_fn --> set_mode["pygame.display.set_mode()"]
+    main_fn --> set_caption["pygame.display.set_caption()"]
+    main_fn --> clock_create["pygame.time.Clock()"]
+    main_fn --> square_create["Square.__init__()"]
+    main_fn --> event_get["pygame.event.get()"]
+    main_fn --> update_call["Square.update()"]
+    main_fn --> draw_call["Square.draw()"]
+    main_fn --> flip_call["pygame.display.flip()"]
+    main_fn --> tick_call["clock.tick()"]
+    main_fn --> quit_call["pygame.quit()"]
+    main_fn --> sys_exit["sys.exit()"]
+
+    square_create --> rand_init["random.randint() / random.choice()"]
+    update_call --> center_call["Square.center()"]
+    update_call --> distance_call["distance()"]
+    update_call --> hyp_call["math.hypot()"]
+    update_call --> rand_update["random.random() / random.choice() / random.randint()"]
+    draw_call --> rect_call["pygame.draw.rect()"]
+    distance_call --> math_ops["basic arithmetic"]
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Sequence Diagram</h2>
+        <div class="mermaid">
+sequenceDiagram
+    participant U as "User"
+    participant M as "main()"
+    participant P as "Pygame"
+    participant E as "Event Queue"
+    participant S as "Square"
+    participant R as "Random / Math"
+
+    U->>M: Launch program
+    M->>P: init, create window, create clock
+    M->>S: Create 20 Square instances
+
+    loop Each frame at 60 FPS
+        M->>E: Poll events
+        alt Quit event received
+            E-->>M: pygame.QUIT
+            M->>P: quit
+            M->>U: Exit program
+        else Continue running
+            M->>P: Fill background
+            loop For each square
+                M->>S: update(squares)
+                S->>R: compute center, distance, and random fallback
+                alt A larger square is nearby
+                    S->>R: steer velocity toward threat
+                else No threat nearby
+                    S->>R: occasionally randomize direction
+                end
+                S->>S: move and bounce at window edges
+            end
+            M->>M: remove expired squares
+            alt Population below target
+                M->>S: spawn new Square instances
+            end
+            loop For each square
+                M->>S: draw(surface)
+                S->>P: draw rectangle
+            end
+            M->>P: flip display and cap frame rate
+        end
+    end
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Notes</h2>
+        <ul class="list">
+          <li>The runtime uses <strong>SQUARE_COUNT = 20</strong>, even though the README still mentions 10 squares.</li>
+          <li><code>Square.update()</code> combines motion, bouncing, threat-seeking, and lifespan decay in one step.</li>
+          <li>The app is intentionally self-contained: there are no extra project modules beyond the main entry point and dependency file.</li>
+        </ul>
+        <p class="note">All diagrams are based on traced behavior in <code>main.py</code>.</p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
