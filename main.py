@@ -29,6 +29,7 @@ class Square:
             random.randint(80, 255),
             random.randint(80, 255),
         )
+        self.alive = True
         
     def check_collision(self, other: "Square") -> bool:
         my_rect = pygame.Rect(self.x, self.y, self.size, self.size)
@@ -55,7 +56,7 @@ class Square:
 def main() -> None:
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption("Exercise 4")
+    pygame.display.set_caption("Exercise 5")
     clock = pygame.time.Clock()
 
     squares = []
@@ -74,20 +75,25 @@ def main() -> None:
         
 
         for i in range(len(squares)):
-            for j in range(i + 1, len(squares)):
-                if squares[i].check_collision(squares[j]):
-                    pass
-        
+            for j in range(len(squares)):
+                
+                s1 = squares[i]
+                s2 = squares[j]
+                
+                if s1.alive and s2.alive:
+                    if s1.check_collision(s2):
+                        if s1.size > s2.size:
+                            s2.alive = False 
+                        elif s2.size > s1.size:
+                            s1.alive = False 
 
         for i in range(len(squares)):
+            if not squares[i].alive:
+                squares[i] = Square(squares[i].original_size)
+            
             squares[i].update()
+            squares[i].draw(screen)
 
-            if squares[i].life <= 0:
-                old_size = squares[i].original_size
-                squares[i] = Square(old_size)
-
-        for square in squares:
-            square.draw(screen)
 
         pygame.display.flip()
         clock.tick(FPS)
