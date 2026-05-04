@@ -10,12 +10,14 @@ BACKGROUND_COLOR = [random.randint(0, 50) for x in range(3)]
 FPS = 60
 SQUARE_COUNT = 45 # Total of 5 + 10 + 30 from Q1 with their respective pixels
 MAX_SQUARE_SIZE = 100 
+TRAILS_LENGTH = 30
 
 
 class Square:
     def __init__(self, initial_size) -> None:
         self.size = initial_size
         self.original_size = initial_size
+        self.trail = []
         
         self.x = random.randint(0, WINDOW_WIDTH - self.size)
         self.y = random.randint(0, WINDOW_HEIGHT - self.size)
@@ -33,37 +35,60 @@ class Square:
         )
         self.alive = True
         
+        
     def check_collision(self, other: "Square") -> bool:
         my_rect = pygame.Rect(self.x, self.y, self.size, self.size)
         other_rect = pygame.Rect(other.x, other.y, other.size, other.size)
         return my_rect.colliderect(other_rect)
     
     def update(self) -> None:
+        current_center = (self.x + self.size/2, self.y + self.size/2)
+        self.trail.append(current_center)
+
+        if len(self.trail) > TRAILS_LENGTH:
+            self.trail.pop(0) 
+
         self.x += self.vx
         self.y += self.vy
 
-        if self.x > WINDOW_WIDTH:
+        wrapped = False
+        if self.x > WINDOW_WIDTH: 
             self.x = -self.size
-        elif self.x < -self.size:
+            wrapped = True
+        elif self.x < -self.size: 
             self.x = WINDOW_WIDTH
-            
-        if self.y > WINDOW_HEIGHT:
+            wrapped = True
+        
+        if self.y > WINDOW_HEIGHT: 
             self.y = -self.size
-        elif self.y < -self.size:
+            wrapped = True
+        elif self.y < -self.size: 
             self.y = WINDOW_HEIGHT
-    
-   
-	def update_speed(self)
-        speed_modifier = 20 / (20 + self.size) 
-        self.current_max_speed = max(1.0, self.base_speed * speed_modifier * 5)
+            wrapped = True
+
+        if wrapped: 
+            self.trail = []
 
     def draw(self, surface: pygame.Surface) -> None:
+        if not self.alive:
+            return
+
+        if len(self.trail) > 1:
+            for i in range(len(self.trail) - 1):
+                pygame.draw.line(
+                    surface, 
+                    self.color, 
+                    self.trail[i], 
+                    self.trail[i+1], 
+                    2
+                )
+
         pygame.draw.rect(surface, self.color, (self.x, self.y, self.size, self.size))
 
 def main() -> None:
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption("Exercise 6")
+    pygame.display.set_caption("Exercise 7")
     clock = pygame.time.Clock()
 
     squares = []
@@ -80,35 +105,9 @@ def main() -> None:
 
         screen.fill(BACKGROUND_COLOR)
         
-
-        for i in range(len(squares)):
-            for j in range(len(squares)):
-                
-                s1 = squares[i]
-                s2 = squares[j]
-                
-                if s1.alive and s2.alive:
-                    if s1.check_collision(s2):
-                        if s1.size > s2.size:
-                            growth = s2.size * 0.3
-                            if s1.size + growth < MAX_SQUARE_SIZE:
-                                s1.size += growth
-                            s1.update_speed() 
-                            s2.alive = False
-                        elif s2.size > s1.size:
-                            growth = s1.size * 0.3
-                            if s2.size + growth < MAX_SQUARE_SIZE:
-                                s2.size += growth
-                            s2.update_speed()
-                            s1.alive = False
-
-        for i in range(len(squares)):
-            if not squares[i].alive:
-                squares[i] = Square(squares[i].original_size)
-            
-            squares[i].update()
-            squares[i].draw(screen)
-
+        for square in squares:
+            square.update()
+            square.draw(screen)
 
         pygame.display.flip()
         clock.tick(FPS)
