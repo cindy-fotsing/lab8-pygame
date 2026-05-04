@@ -34,12 +34,15 @@ class Square:
         self.x += self.vx
         self.y += self.vy
 
-        if self.x <= 0 or self.x + self.size >= WINDOW_WIDTH:
-            self.vx *= -1
-        if self.y <= 0 or self.y + self.size >= WINDOW_HEIGHT:
-            self.vy *= -1
-
-        self.life -= 1
+        if self.x > WINDOW_WIDTH:
+            self.x = -self.size
+        elif self.x < -self.size:
+            self.x = WINDOW_WIDTH
+            
+        if self.y > WINDOW_HEIGHT:
+            self.y = -self.size
+        elif self.y < -self.size:
+            self.y = WINDOW_HEIGHT
 
     def draw(self, surface: pygame.Surface) -> None:
         pygame.draw.rect(surface, self.color, (self.x, self.y, self.size, self.size))
@@ -47,7 +50,7 @@ class Square:
 def main() -> None:
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption("Exercise 2: Same Size Respawn")
+    pygame.display.set_caption("Exercise 3")
     clock = pygame.time.Clock()
 
     squares = []
@@ -82,3 +85,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    
