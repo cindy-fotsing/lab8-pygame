@@ -18,7 +18,7 @@ DANGER_RADIUS = 150
 
 
 class Square:
-	def __init__(self) -> None:
+	def __init__(self, initial_size: int = None) -> None:
 		self.size = random.randint(SQUARE_MIN_SIZE, SQUARE_MAX_SIZE)
 		self.x = random.randint(0, WINDOW_WIDTH - self.size)
 		self.y = random.randint(0, WINDOW_HEIGHT - self.size)
@@ -35,6 +35,7 @@ class Square:
 			random.randint(80, 255),
 			random.randint(80, 255),
 		)
+		
 
 	def center(self) -> tuple[float, float]:
 		return (self.x + self.size / 2, self.y + self.size / 2)
@@ -100,10 +101,15 @@ def main() -> None:
 	pygame.display.set_caption("Random Moving Squares")
 	clock = pygame.time.Clock()
 
-	squares = [Square() for _ in range(SQUARE_COUNT)]
+	squares = []
+	configs = [(5, 25), (10, 10), (30, 4)]
+	for count, size in configs:
+		for _ in range(count):
+			squares.append(Square(size))
 
 	running = True
 	while running:
+		dt = clock.tick(FPS)
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
