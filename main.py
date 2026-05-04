@@ -18,7 +18,7 @@ DANGER_RADIUS = 150
 
 
 class Square:
-	def __init__(self, initial_size: int = None) -> None:
+	def __init__(self, initial_size) -> None:
 		self.size = random.randint(SQUARE_MIN_SIZE, SQUARE_MAX_SIZE)
 		self.x = random.randint(0, WINDOW_WIDTH - self.size)
 		self.y = random.randint(0, WINDOW_HEIGHT - self.size)
