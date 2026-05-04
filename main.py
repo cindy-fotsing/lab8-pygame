@@ -9,6 +9,8 @@ WINDOW_HEIGHT = 600
 BACKGROUND_COLOR = [random.randint(0, 50) for x in range(3)]
 FPS = 60
 SQUARE_COUNT = 45 # Total of 5 + 10 + 30 from Q1 with their respective pixels
+MAX_SQUARE_SIZE = 100 
+
 
 class Square:
     def __init__(self, initial_size) -> None:
@@ -49,6 +51,11 @@ class Square:
             self.y = -self.size
         elif self.y < -self.size:
             self.y = WINDOW_HEIGHT
+    
+   
+	def update_speed(self)
+        speed_modifier = 20 / (20 + self.size) 
+        self.current_max_speed = max(1.0, self.base_speed * speed_modifier * 5)
 
     def draw(self, surface: pygame.Surface) -> None:
         pygame.draw.rect(surface, self.color, (self.x, self.y, self.size, self.size))
@@ -56,7 +63,7 @@ class Square:
 def main() -> None:
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption("Exercise 5")
+    pygame.display.set_caption("Exercise 6")
     clock = pygame.time.Clock()
 
     squares = []
@@ -83,9 +90,17 @@ def main() -> None:
                 if s1.alive and s2.alive:
                     if s1.check_collision(s2):
                         if s1.size > s2.size:
-                            s2.alive = False 
+                            growth = s2.size * 0.3
+                            if s1.size + growth < MAX_SQUARE_SIZE:
+                                s1.size += growth
+                            s1.update_speed() 
+                            s2.alive = False
                         elif s2.size > s1.size:
-                            s1.alive = False 
+                            growth = s1.size * 0.3
+                            if s2.size + growth < MAX_SQUARE_SIZE:
+                                s2.size += growth
+                            s2.update_speed()
+                            s1.alive = False
 
         for i in range(len(squares)):
             if not squares[i].alive:
@@ -103,4 +118,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    
