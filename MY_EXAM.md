@@ -3,3 +3,5 @@ I did a big mistake on exercise 1 and it's towards the end of exercise 2 that i 
 For exercise 5, i wasn't able to implement everything correctly, i wanted to make sure that the squares don't eat the squares of the same size as them but i couldn't
 
 For exercise 6 i had this problem of space indentation and i don't really understand the problem. Also, i couldn't really implement what the question was asking for since the problem was blocked on line 56
+
+For ex8 i didn't want to try doing because of lack of time
